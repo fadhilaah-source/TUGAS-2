@@ -1,113 +1,142 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
-#define MAX 100
+#define MAX_WORDS 1000
+#define MAX_LENGTH 100
 
 // ================= DISPLAY =================
-void tampilData(int arr[], int n) {
-    for(int i = 0; i < n; i++) {
-        printf("%d ", arr[i]);
+void tampilData(char arr[][MAX_LENGTH], int n) {
+
+    int limit = n;
+
+    if(limit > 20) {
+        limit = 20;
     }
-    printf("\n");
+
+    for(int i = 0; i < limit; i++) {
+        printf("%s\n", arr[i]);
+    }
 }
 
 // ================= SHUFFLE =================
-void shuffleData(int arr[], int n) {
+void shuffleData(char arr[][MAX_LENGTH], int n) {
+
     for(int i = 0; i < n; i++) {
+
         int j = rand() % n;
 
-        int temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
+        char temp[MAX_LENGTH];
+
+        strcpy(temp, arr[i]);
+        strcpy(arr[i], arr[j]);
+        strcpy(arr[j], temp);
+    }
+}
+
+// ================= COPY ARRAY =================
+void copyArray(char source[][MAX_LENGTH],
+               char target[][MAX_LENGTH],
+               int n) {
+
+    for(int i = 0; i < n; i++) {
+        strcpy(target[i], source[i]);
     }
 }
 
 // ================= BUBBLE SORT =================
-void bubbleSort(int arr[], int n) {
-    for(int i = 0; i < n-1; i++) {
-        for(int j = 0; j < n-i-1; j++) {
+void bubbleSort(char arr[][MAX_LENGTH], int n) {
 
-            if(arr[j] > arr[j+1]) {
+    for(int i = 0; i < n - 1; i++) {
 
-                int temp = arr[j];
-                arr[j] = arr[j+1];
-                arr[j+1] = temp;
+        for(int j = 0; j < n - i - 1; j++) {
 
+            if(strcmp(arr[j], arr[j + 1]) > 0) {
+
+                char temp[MAX_LENGTH];
+
+                strcpy(temp, arr[j]);
+                strcpy(arr[j], arr[j + 1]);
+                strcpy(arr[j + 1], temp);
             }
         }
     }
 }
 
 // ================= INSERTION SORT =================
-void insertionSort(int arr[], int n) {
+void insertionSort(char arr[][MAX_LENGTH], int n) {
 
-    int i, key, j;
+    for(int i = 1; i < n; i++) {
 
-    for(i = 1; i < n; i++) {
+        char key[MAX_LENGTH];
+        strcpy(key, arr[i]);
 
-        key = arr[i];
-        j = i - 1;
+        int j = i - 1;
 
-        while(j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
+        while(j >= 0 && strcmp(arr[j], key) > 0) {
+
+            strcpy(arr[j + 1], arr[j]);
             j--;
         }
 
-        arr[j + 1] = key;
+        strcpy(arr[j + 1], key);
     }
 }
 
 // ================= SELECTION SORT =================
-void selectionSort(int arr[], int n) {
+void selectionSort(char arr[][MAX_LENGTH], int n) {
 
-    int i, j, min_idx;
+    for(int i = 0; i < n - 1; i++) {
 
-    for(i = 0; i < n-1; i++) {
+        int min = i;
 
-        min_idx = i;
+        for(int j = i + 1; j < n; j++) {
 
-        for(j = i+1; j < n; j++) {
-
-            if(arr[j] < arr[min_idx]) {
-                min_idx = j;
+            if(strcmp(arr[j], arr[min]) < 0) {
+                min = j;
             }
         }
 
-        int temp = arr[min_idx];
-        arr[min_idx] = arr[i];
-        arr[i] = temp;
+        char temp[MAX_LENGTH];
+
+        strcpy(temp, arr[i]);
+        strcpy(arr[i], arr[min]);
+        strcpy(arr[min], temp);
     }
 }
 
 // ================= MERGE SORT =================
-void merge(int arr[], int l, int m, int r) {
-
-    int i, j, k;
+void merge(char arr[][MAX_LENGTH], int l, int m, int r) {
 
     int n1 = m - l + 1;
     int n2 = r - m;
 
-    int L[n1], R[n2];
+    char L[n1][MAX_LENGTH];
+    char R[n2][MAX_LENGTH];
 
-    for(i = 0; i < n1; i++)
-        L[i] = arr[l + i];
+    for(int i = 0; i < n1; i++) {
+        strcpy(L[i], arr[l + i]);
+    }
 
-    for(j = 0; j < n2; j++)
-        R[j] = arr[m + 1 + j];
+    for(int j = 0; j < n2; j++) {
+        strcpy(R[j], arr[m + 1 + j]);
+    }
 
-    i = 0;
-    j = 0;
-    k = l;
+    int i = 0;
+    int j = 0;
+    int k = l;
 
     while(i < n1 && j < n2) {
 
-        if(L[i] <= R[j]) {
-            arr[k] = L[i];
+        if(strcmp(L[i], R[j]) <= 0) {
+
+            strcpy(arr[k], L[i]);
             i++;
         }
         else {
-            arr[k] = R[j];
+
+            strcpy(arr[k], R[j]);
             j++;
         }
 
@@ -115,19 +144,21 @@ void merge(int arr[], int l, int m, int r) {
     }
 
     while(i < n1) {
-        arr[k] = L[i];
+
+        strcpy(arr[k], L[i]);
         i++;
         k++;
     }
 
     while(j < n2) {
-        arr[k] = R[j];
+
+        strcpy(arr[k], R[j]);
         j++;
         k++;
     }
 }
 
-void mergeSort(int arr[], int l, int r) {
+void mergeSort(char arr[][MAX_LENGTH], int l, int r) {
 
     if(l < r) {
 
@@ -141,31 +172,37 @@ void mergeSort(int arr[], int l, int r) {
 }
 
 // ================= QUICK SORT =================
-int partition(int arr[], int low, int high) {
+int partition(char arr[][MAX_LENGTH], int low, int high) {
 
-    int pivot = arr[high];
+    char pivot[MAX_LENGTH];
+    strcpy(pivot, arr[high]);
+
     int i = low - 1;
 
     for(int j = low; j < high; j++) {
 
-        if(arr[j] < pivot) {
+        if(strcmp(arr[j], pivot) < 0) {
 
             i++;
 
-            int temp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = temp;
+            char temp[MAX_LENGTH];
+
+            strcpy(temp, arr[i]);
+            strcpy(arr[i], arr[j]);
+            strcpy(arr[j], temp);
         }
     }
 
-    int temp = arr[i + 1];
-    arr[i + 1] = arr[high];
-    arr[high] = temp;
+    char temp[MAX_LENGTH];
+
+    strcpy(temp, arr[i + 1]);
+    strcpy(arr[i + 1], arr[high]);
+    strcpy(arr[high], temp);
 
     return i + 1;
 }
 
-void quickSort(int arr[], int low, int high) {
+void quickSort(char arr[][MAX_LENGTH], int low, int high) {
 
     if(low < high) {
 
@@ -177,47 +214,60 @@ void quickSort(int arr[], int low, int high) {
 }
 
 // ================= SHELL SORT =================
-void shellSort(int arr[], int n) {
+void shellSort(char arr[][MAX_LENGTH], int n) {
 
-    for(int gap = n/2; gap > 0; gap /= 2) {
+    for(int gap = n / 2; gap > 0; gap /= 2) {
 
         for(int i = gap; i < n; i++) {
 
-            int temp = arr[i];
+            char temp[MAX_LENGTH];
+            strcpy(temp, arr[i]);
+
             int j;
 
-            for(j = i; j >= gap && arr[j-gap] > temp; j -= gap) {
-                arr[j] = arr[j-gap];
+            for(j = i;
+                j >= gap &&
+                strcmp(arr[j - gap], temp) > 0;
+                j -= gap) {
+
+                strcpy(arr[j], arr[j - gap]);
             }
 
-            arr[j] = temp;
+            strcpy(arr[j], temp);
         }
-    }
-}
-
-// ================= COPY ARRAY =================
-void copyArray(int source[], int target[], int n) {
-
-    for(int i = 0; i < n; i++) {
-        target[i] = source[i];
     }
 }
 
 // ================= MAIN =================
 int main() {
 
-    int data[MAX];
-    int arr[MAX];
-    int n = 20;
+    FILE *fp;
+
+    char data[MAX_WORDS][MAX_LENGTH];
+    char arr[MAX_WORDS][MAX_LENGTH];
+
+    int n = 0;
 
     srand(time(NULL));
 
-    // Generate random data
-    for(int i = 0; i < n; i++) {
-        data[i] = rand() % 1000;
+    // ================= READ FILE =================
+    fp = fopen("sda.c", "r");
+
+    if(fp == NULL) {
+
+        printf("File sda.c tidak ditemukan!\n");
+        return 1;
     }
 
-    int pilihanUtama, pilihanMetode;
+    while(fgets(data[n], MAX_LENGTH, fp) != NULL) {
+
+        data[n][strcspn(data[n], "\n")] = 0;
+        n++;
+    }
+
+    fclose(fp);
+
+    int menuUtama, metode;
 
     do {
 
@@ -226,9 +276,9 @@ int main() {
         printf("2. Advance Sorting\n");
         printf("3. Keluar\n");
         printf("Pilih menu: ");
-        scanf("%d", &pilihanUtama);
+        scanf("%d", &menuUtama);
 
-        switch(pilihanUtama) {
+        switch(menuUtama) {
 
             // ================= SORTING DASAR =================
             case 1:
@@ -239,7 +289,7 @@ int main() {
                 printf("3. Selection Sort\n");
                 printf("4. Kembali\n");
                 printf("Pilih metode: ");
-                scanf("%d", &pilihanMetode);
+                scanf("%d", &metode);
 
                 copyArray(data, arr, n);
                 shuffleData(arr, n);
@@ -252,19 +302,21 @@ int main() {
 
                 start = clock();
 
-                if(pilihanMetode == 1) {
+                if(metode == 1) {
                     bubbleSort(arr, n);
                 }
-                else if(pilihanMetode == 2) {
+                else if(metode == 2) {
                     insertionSort(arr, n);
                 }
-                else if(pilihanMetode == 3) {
+                else if(metode == 3) {
                     selectionSort(arr, n);
                 }
 
                 end = clock();
 
-                waktu = ((double)(end - start)) / CLOCKS_PER_SEC;
+                waktu =
+                ((double)(end - start))
+                / CLOCKS_PER_SEC;
 
                 printf("\nData sesudah sorting:\n");
                 tampilData(arr, n);
@@ -282,7 +334,7 @@ int main() {
                 printf("3. Shell Sort\n");
                 printf("4. Kembali\n");
                 printf("Pilih metode: ");
-                scanf("%d", &pilihanMetode);
+                scanf("%d", &metode);
 
                 copyArray(data, arr, n);
                 shuffleData(arr, n);
@@ -292,19 +344,21 @@ int main() {
 
                 start = clock();
 
-                if(pilihanMetode == 1) {
+                if(metode == 1) {
                     mergeSort(arr, 0, n - 1);
                 }
-                else if(pilihanMetode == 2) {
+                else if(metode == 2) {
                     quickSort(arr, 0, n - 1);
                 }
-                else if(pilihanMetode == 3) {
+                else if(metode == 3) {
                     shellSort(arr, n);
                 }
 
                 end = clock();
 
-                waktu = ((double)(end - start)) / CLOCKS_PER_SEC;
+                waktu =
+                ((double)(end - start))
+                / CLOCKS_PER_SEC;
 
                 printf("\nData sesudah sorting:\n");
                 tampilData(arr, n);
@@ -321,7 +375,7 @@ int main() {
                 printf("\nPilihan tidak valid!\n");
         }
 
-    } while(pilihanUtama != 3);
+    } while(menuUtama != 3);
 
     return 0;
 }
