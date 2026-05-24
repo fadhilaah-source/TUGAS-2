@@ -251,7 +251,7 @@ int main() {
     srand(time(NULL));
 
     // ================= READ FILE =================
-    fp = fopen("sda.c", "r");
+    fp = fopen("words.txt", "r");
 
     if(fp == NULL) {
 
